@@ -1,4 +1,4 @@
--author("begemot").
+-author("Sergey Loguntsov").
 
 -record(telemetry, {
   type = raw :: cl_telemetry:type(),

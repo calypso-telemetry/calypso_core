@@ -1,5 +1,5 @@
 -module(calypso_core_app_sup).
--author("begemot").
+-author("Sergey Loguntsov").
 
 -behaviour(supervisor).
 

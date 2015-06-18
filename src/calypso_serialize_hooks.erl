@@ -1,5 +1,5 @@
 -module(calypso_serialize_hooks).
--author("begemot").
+-author("Sergey Loguntsov").
 
 %% API
 -export([

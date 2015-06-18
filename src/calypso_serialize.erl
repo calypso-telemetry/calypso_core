@@ -1,5 +1,5 @@
 -module(calypso_serialize).
--author("begemot").
+-author("Sergey Loguntsov").
 
 %% API
 -export([

@@ -1,5 +1,5 @@
 -module(calypso_time).
--author("begemot").
+-author("Sergey Loguntsov").
 
 %% API
 -export([

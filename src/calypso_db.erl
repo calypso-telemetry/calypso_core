@@ -1,5 +1,5 @@
 -module(calypso_db).
--author("begemot").
+-author("Sergey Loguntsov").
 
 -include("cl_telemetry.hrl").
 

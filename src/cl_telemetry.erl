@@ -1,5 +1,5 @@
 -module(cl_telemetry).
--author("begemot").
+-author("Sergey Loguntsov").
 
 -include("cl_telemetry.hrl").
 

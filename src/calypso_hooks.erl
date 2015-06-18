@@ -1,5 +1,5 @@
 -module(calypso_hooks).
--author("begemot").
+-author("Sergey Loguntsov").
 
 -include("logger.hrl").
 

@@ -1,5 +1,5 @@
 -module(calypso_util).
--author("begemot").
+-author("Sergey Loguntsov").
 
 %% API
 -export([

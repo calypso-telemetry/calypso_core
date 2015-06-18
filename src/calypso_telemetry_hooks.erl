@@ -1,5 +1,5 @@
 -module(calypso_telemetry_hooks).
--author("begemot").
+-author("Sergey Loguntsov").
 
 -include("cl_telemetry.hrl").
 

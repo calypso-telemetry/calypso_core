@@ -1,5 +1,5 @@
 -module(cl_device).
--author("begemot").
+-author("Sergey Loguntsov").
 
 -include("cl_device.hrl").
 
