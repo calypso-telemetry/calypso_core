@@ -1,0 +1,12 @@
+{application, calypso_core, [
+  {description, "Calypso Core Application"},
+  {vsn, "1"},
+  {modules, [] },
+  {registered, []},
+  {applications, [
+    kernel,
+    stdlib
+  ]},
+  {mod, {calypso_core_app, []}},
+  {env, []}
+]}.
