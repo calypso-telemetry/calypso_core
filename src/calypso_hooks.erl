@@ -19,7 +19,8 @@
   run_filter/3,
   run_with_predicate/4,
   run_while_with_predicate/4,
-  run_before_result/2
+  run_before_result/2,
+  get_hook_name/0
 ]).
 
 -export([
@@ -38,13 +39,10 @@ add(Name, Id, Function) ->
 add(Name, undefined, { Id, Priority }, Function) when is_atom(Name) ->
   add(Name, Priority, Id, Function);
 add(Name, Priority, Id, Function) when is_function(Function, 1), is_atom(Name),is_atom(Id) ->
-  { FunModule, FunName, 1 } = definition(Function),
-  case erlang:function_exported(FunModule, FunName, 1) of
-    true -> ok;
-    false -> error({function_not_exported, [ FunModule, FunName, 1 ]})
-  end,
+  Info = { FunModule, FunName, 1 } = calypso_util:definition(Function),
+  calypso_util:ensure_function_exported(Info),
   F = { FunModule, FunName },
-  ok = gen_server:call(?SERVER, { add, Name, Priority, Id, { FunModule, FunName } }),
+  ok = gen_server:call(?SERVER, { add, Name, Priority, Id, F}),
   run(core_add_hook, { Name, Priority, Id }),
   ok.
 
@@ -75,13 +73,17 @@ run_map(Name, Arg, Function)  when is_function(Function, 1) ->
   run_with_predicate(Name, Arg, [], fun(Id, Result, Acc) -> [ { Id, Function(Result)} | Acc ] end).
 
 run_map(Name, Arg) ->
-  run_with_predicate(Name, Arg, [], fun(Id, Result, Acc) -> [ {Id, Result} | Acc ] end).
+  run_with_predicate(Name, Arg, [], fun
+    (_Id, none, Acc) -> Acc;
+    (Id, Result, Acc) -> [ {Id, Result} | Acc ]
+  end).
 
 run_filter(Name, Arg, Function) when is_function(Function, 1) ->
   run_with_predicate(Name, Arg, [], fun(_, Item, Acc) ->
     case Function(Item) of
       true -> [ Item | Acc ];
-      false -> Acc
+      false -> Acc;
+      none -> Acc
     end
   end).
 
@@ -192,6 +194,7 @@ run_hook(Name, Id, Function, Arg) when is_function(Function, 1)->
       { error, unknown };
     undefined ->
       put(Key, true),
+      put(hook_name, Name),
       R = case catch Function(Arg) of
         { 'EXIT', { function_clause, [_, { ?MODULE, run_hook, 4 ,_ } |_] }} ->
           { error, unknown };
@@ -214,12 +217,10 @@ compile() ->
   ets:delete(?ETS),
   ok.
 
-definition(Fun) ->
-  { module, Module } = erlang:fun_info(Fun, module),
-  { name, Name } = erlang:fun_info(Fun, name),
-  { arity, Arity } = erlang:fun_info(Fun, arity),
-  { Module, Name, Arity }.
+get_hook_name() ->
+  get(hook_name).
 
+%% -------------------------------------------------------------
 add_hook(Id, Fun) ->
   add(core_add_hook, Id, Fun).
 

@@ -5,6 +5,7 @@
 -export([
   maps_binary_key_to_atom/1,
   validate/2,
+  definition/1, ensure_function_exported/1,
   to_integer/1, to_boolean/1
 ]).
 
@@ -38,3 +39,18 @@ to_boolean(Binary) when is_binary(Binary) ->
 to_boolean(Int) when is_integer(Int) -> Int /= 0;
 to_boolean(Boolean) when is_boolean(Boolean) -> Boolean.
 
+definition(Fun) ->
+  { module, Module } = erlang:fun_info(Fun, module),
+  { name, Name } = erlang:fun_info(Fun, name),
+  { arity, Arity } = erlang:fun_info(Fun, arity),
+  { Module, Name, Arity }.
+
+ensure_function_exported({ FunModule, FunName, Arity } = Info) ->
+  case erlang:function_exported(FunModule, FunName, Arity) of
+    true -> Info;
+    false -> error({function_not_exported, Info})
+  end;
+ensure_function_exported(Fun) when is_function(Fun) ->
+  Info = calypso_util:definition(Fun),
+  ok = ensure_function_exported(Info),
+  Info.
