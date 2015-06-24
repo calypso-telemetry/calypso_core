@@ -32,7 +32,7 @@ start_link() ->
   ignore |
   {error, Reason :: term()}).
 init([]) ->
-  RestartStrategy = one_for_one,
+  RestartStrategy = one_for_all,
   MaxRestarts = 1000,
   MaxSecondsBetweenRestarts = 3600,
 
